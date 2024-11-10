@@ -1,4 +1,5 @@
 const Book = require("../models/Book");
+const { Op,fn,col } = require("sequelize");
 
 exports.createBook = async (req, res) => {
   try {
@@ -13,14 +14,22 @@ exports.createBook = async (req, res) => {
 
 exports.getBooks = async (req, res) => {
   try {
-    const { search } = req.query;
+    let { search } = req.query;
+    console.log('Search query:', search); // Debugging log
+    search = search ? search.toString() : '';
+    
     const books = await Book.findAll({
       where: {
-        title: { [Op.iLike]: `%${search}%` },
+        title: {
+          [Op.like]: `%${search}%`,
+        },
       },
     });
     res.status(200).json(books);
   } catch (error) {
+    console.error('Error:', error); // More detailed error logging
     res.status(500).json({ error: error.message });
   }
 };
+
+
