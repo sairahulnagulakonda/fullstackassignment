@@ -33,4 +33,11 @@ app.get("/test", (req, res) => {
   res.send("Hello World!.....");
 });
 
+app.listen(process.env.APP_PORT, () => {
+  console.log(`${process.env.NODE_ENV}`);
+  console.log(
+    `Listening to : http://localhost:${process.env.APP_PORT}`
+  );
+});
+
 module.exports = app;
