@@ -15,6 +15,10 @@ const corsOptions = {
 
 // Enable CORS middleware with wildcard options
 app.use(cors(corsOptions));
+// Routes
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/books", require("./routes/bookRoutes"));
+
 
 app.get("/test", (req, res) => {
   res.send("Hello World!.....");
