@@ -1,11 +1,18 @@
 const Book = require("../models/Book");
-const { Op,fn,col } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 
 exports.createBook = async (req, res) => {
   try {
     const { title, author, genre, condition, availability } = req.body;
     const userId = req.user.id;
-    const book = await Book.create({ title, author, genre, condition, availability, userId });
+    const book = await Book.create({
+      title,
+      author,
+      genre,
+      condition,
+      availability,
+      userId,
+    });
     res.status(201).json(book);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -15,9 +22,11 @@ exports.createBook = async (req, res) => {
 exports.getBooks = async (req, res) => {
   try {
     let { search } = req.query;
-    console.log('Search query:', search); // Debugging log
-    search = search ? search.toString() : '';
-    
+    // Remove surrounding quotation marks if present
+    if (search) {
+      search = search.toString().replace(/^"(.+)"$/, "$1");
+    }
+
     const books = await Book.findAll({
       where: {
         title: {
@@ -27,9 +36,7 @@ exports.getBooks = async (req, res) => {
     });
     res.status(200).json(books);
   } catch (error) {
-    console.error('Error:', error); // More detailed error logging
+    console.error("Error:", error); // More detailed error logging
     res.status(500).json({ error: error.message });
   }
 };
-
-
