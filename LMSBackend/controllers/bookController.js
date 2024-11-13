@@ -102,6 +102,8 @@ exports.deleteBook = async (req, res) => {
 
 exports.getBooks = async (req, res) => {
   try {
+    console.log("Enter into get books function");
+
     let { search, author, genre, availability, location, page, limit } =
       req.query;
 

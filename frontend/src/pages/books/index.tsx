@@ -14,7 +14,9 @@ const BooksPage: React.FC = () => {
   const loadBooks = async () => {
     try {
       const { data } = await fetchBooks(search);
-      setBooks(data as Book[]);
+      console.log("data: ", data);
+
+      setBooks(data.books);
     } catch (error) {
       console.error("Error loading books:", error);
     }

@@ -27,9 +27,10 @@ interface Book {
 }
 
 export const registerUser = (data: AuthData): Promise<AxiosResponse> =>
-  API.post("/auth/register", data);
+  API.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, data);
 export const loginUser = (
   data: AuthData
-): Promise<AxiosResponse<{ token: string }>> => API.post("/auth/login", data);
+): Promise<AxiosResponse<{ token: string }>> =>
+  API.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, data);
 export const fetchBooks = (query: string): Promise<AxiosResponse<Book[]>> =>
-  API.get(`/books?search=${query}`);
+  API.get(`${process.env.NEXT_PUBLIC_API_URL}/books?search=${query}`);
