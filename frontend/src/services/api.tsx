@@ -13,6 +13,7 @@ API.interceptors.request.use((req) => {
 });
 
 interface AuthData {
+  username: string;
   email: string;
   password: string;
 }

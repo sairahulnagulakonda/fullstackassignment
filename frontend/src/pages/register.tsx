@@ -3,6 +3,7 @@ import { registerUser } from "../services/api";
 import { useRouter } from "next/router";
 
 const RegisterPage: React.FC = () => {
+  const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -11,7 +12,7 @@ const RegisterPage: React.FC = () => {
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await registerUser({ email, password });
+      await registerUser({ username, email, password });
       router.push("/login");
     } catch (err) {
       setError("Registration failed. Please try again.");
@@ -22,6 +23,13 @@ const RegisterPage: React.FC = () => {
     <div style={styles.container}>
       <h2 style={styles.heading}>Register</h2>
       <form onSubmit={handleRegister} style={styles.form}>
+        <input
+          type="username"
+          value={username}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder="User Name"
+          style={styles.input}
+        />
         <input
           type="email"
           value={email}
