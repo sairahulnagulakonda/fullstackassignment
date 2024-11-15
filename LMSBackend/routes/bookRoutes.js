@@ -15,6 +15,6 @@ router.get("/book/:id", authMiddleware, getBook);
 router.get("/:id", authMiddleware, getBookByUser);
 router.put("/:id", authMiddleware, updateBook);
 router.delete("/:id", authMiddleware, deleteBook);
-router.get("/", authMiddleware, getBooks);
+router.get("/", getBooks);
 
 module.exports = router;

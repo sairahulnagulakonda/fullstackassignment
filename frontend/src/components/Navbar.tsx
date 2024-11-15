@@ -22,8 +22,11 @@ const Navbar: React.FC = () => {
         <Link href="/login" style={styles.buttonLink}>
           Login
         </Link>
-        <Link href="/register" style={styles.buttonLink}>
+        <Link href="/edit-book" style={styles.buttonLink}>
           Register
+        </Link>
+        <Link href="/add-book" style={styles.buttonLink}>
+          AddBook
         </Link>
       </div>
     </nav>

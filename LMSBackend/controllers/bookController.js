@@ -3,13 +3,13 @@ const { Op, fn, col } = require("sequelize");
 
 exports.createBook = async (req, res) => {
   try {
-    const { title, author, genre, condition, availability } = req.body;
+    const { title, author, genre, status, availability } = req.body;
     const userId = req.user.id;
     const book = await Book.create({
       title,
       author,
       genre,
-      condition,
+      status,
       availability,
       userId,
     });
@@ -52,8 +52,7 @@ exports.getBookByUser = async (req, res) => {
 exports.updateBook = async (req, res) => {
   try {
     const bookId = req.params.id;
-    const { title, author, genre, condition, availability, location } =
-      req.body;
+    const { title, author, genre, status, availability, location } = req.body;
     const userId = req.user.id;
 
     const book = await Book.findOne({ where: { id: bookId, userId } });
@@ -67,7 +66,7 @@ exports.updateBook = async (req, res) => {
     book.title = title;
     book.author = author;
     book.genre = genre;
-    book.condition = condition;
+    book.status = status;
     book.availability = availability;
     book.location = location;
 
