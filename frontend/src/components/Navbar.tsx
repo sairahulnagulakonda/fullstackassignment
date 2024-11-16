@@ -13,23 +13,28 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <nav style={styles.navbar}>
-      <div style={{ padding: "50px" }}>
-        <h1>Welcome to the Book Exchange Platform</h1>
-        <p>Discover, share, and borrow books from other enthusiasts.</p>
-      </div>
-      <div style={styles.centerLinks}>
-        <Link href="/login" style={styles.buttonLink}>
-          Login
-        </Link>
-        <Link href="/edit-book" style={styles.buttonLink}>
-          Register
-        </Link>
-        <Link href="/add-book" style={styles.buttonLink}>
-          AddBook
-        </Link>
-      </div>
-    </nav>
+    <>
+      <nav style={styles.navbar}>
+        <div style={{ padding: "50px" }}>
+          <h1>Welcome to the Book Exchange Platform</h1>
+          <p>Discover, share, and borrow books from other enthusiasts.</p>
+        </div>
+        <div style={styles.centerLinks}>
+          <Link href="/login" style={styles.buttonLink}>
+            Login
+          </Link>
+          <Link href="/books" style={styles.buttonLink}>
+            Login
+          </Link>
+          <Link href="/edit-book" style={styles.buttonLink}>
+            Register
+          </Link>
+          <Link href="/add-book" style={styles.buttonLink}>
+            AddBook
+          </Link>
+        </div>
+      </nav>
+    </>
   );
 };
 

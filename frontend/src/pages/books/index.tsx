@@ -17,7 +17,7 @@ const BooksPage: React.FC = () => {
     try {
       const { data } = await fetchBooks(search);
       console.log("data: ", data);
-      setBooks(data);
+      setBooks(data.books);
     } catch (error) {
       console.error("Error loading books:", error);
     }
@@ -48,9 +48,9 @@ const BooksPage: React.FC = () => {
   return (
     <div className="container">
       <nav className="navbar navbar-dark bg-dark">
-        <a className="navbar-brand ml-2" href="">
+        <div className="navbar-brand ml-2" href="">
           Home
-        </a>
+        </div>
         <button
           type="submit"
           onClick={handleLogout}

@@ -6,7 +6,7 @@ import BooksPage from "@/pages/books";
 const Home: React.FC = () => {
   return (
     <div>
-      <LoginForm />
+      <BooksPage />
     </div>
   );
 };

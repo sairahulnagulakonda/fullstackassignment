@@ -2,6 +2,7 @@
 
 import { forgotPassword, loginUser, registerUser } from "@/services/api";
 import React, { useState, FormEvent } from "react";
+import "../components/LoginForm.css";
 import { useRouter } from "next/navigation"; // Ensure this import is correct
 import CustomSnackbar from "../components/Snackbar";
 const LoginForm: React.FC = () => {
@@ -35,6 +36,7 @@ const LoginForm: React.FC = () => {
         severity: "success",
       });
       clear();
+      console.log("Navigating to /books");
       router.push("/books");
     } catch (err) {
       setSnackbar({
@@ -130,13 +132,12 @@ const LoginForm: React.FC = () => {
                   Remember me
                 </label>
               </div>
-              <a
-                href="#!"
+              <div
                 className="text-body"
                 onClick={() => setView("forgotPassword")}
               >
                 Forgot password?
-              </a>
+              </div>
             </div>
 
             <div className="text-center text-lg-start mt-4 pt-2">
@@ -147,16 +148,15 @@ const LoginForm: React.FC = () => {
               >
                 Login
               </button>
-              <p className="small fw-bold mt-2 pt-1 mb-0">
+              <div className="small fw-bold mt-2 pt-1 mb-0">
                 Don't have an account?{" "}
-                <a
-                  href="#!"
+                <div
                   className="link-danger"
                   onClick={() => setView("register")}
                 >
                   Register
-                </a>
-              </p>
+                </div>
+              </div>
             </div>
           </form>
         );
@@ -204,16 +204,12 @@ const LoginForm: React.FC = () => {
               >
                 Register
               </button>
-              <p className="small fw-bold mt-2 pt-1 mb-0">
+              <div className="small fw-bold mt-2 pt-1 mb-0">
                 Already have an account?{" "}
-                <a
-                  href="#!"
-                  className="link-danger"
-                  onClick={() => setView("login")}
-                >
+                <div className="link-danger" onClick={() => setView("login")}>
                   Login
-                </a>
-              </p>
+                </div>
+              </div>
             </div>
           </form>
         );
@@ -261,16 +257,12 @@ const LoginForm: React.FC = () => {
               >
                 Reset Password
               </button>
-              <p className="small fw-bold mt-2 pt-1 mb-0">
+              <div className="small fw-bold mt-2 pt-1 mb-0">
                 Remembered your password?{" "}
-                <a
-                  href="#!"
-                  className="link-danger"
-                  onClick={() => setView("login")}
-                >
+                <div className="link-danger" onClick={() => setView("login")}>
                   Login
-                </a>
-              </p>
+                </div>
+              </div>
             </div>
           </form>
         );
@@ -280,28 +272,30 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <section className="vh-100">
-      <div className="container-fluid h-custom">
-        <div className="row d-flex justify-content-center align-items-center h-100">
-          <div className="col-md-9 col-lg-6 col-xl-5">
-            <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-              className="img-fluid"
-              alt="Sample image"
+    <>
+      <section className="vh-100">
+        <div className="container-fluid h-custom">
+          <div className="row d-flex justify-content-center align-items-center h-100">
+            <div className="col-md-9 col-lg-6 col-xl-5">
+              <img
+                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                className="img-fluid"
+                alt="Sample image"
+              />
+            </div>
+            <CustomSnackbar
+              open={snackbar.open}
+              message={snackbar.message}
+              severity={snackbar.severity}
+              onClose={handleCloseSnackbar}
             />
-          </div>
-          <CustomSnackbar
-            open={snackbar.open}
-            message={snackbar.message}
-            severity={snackbar.severity}
-            onClose={handleCloseSnackbar}
-          />
-          <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-            {renderForm()}
+            <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+              {renderForm()}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 
