@@ -1,12 +1,12 @@
 import LoginForm from "@/pages/login";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../components/LoginForm.css";
-import BooksPage from "@/pages/books";
+import BooksPage from "@/pages/page";
 
 const Home: React.FC = () => {
   return (
     <div>
-      <BooksPage />
+      <LoginForm />
     </div>
   );
 };

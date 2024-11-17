@@ -1,15 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
-import { fetchBooks, fetchMyList } from "../../services/api";
-import BookList from "../../components/Booklist";
-import { Book } from "../books/types"; // Import the Book type
+import { fetchBooks, fetchMyList } from "../services/api";
+import BookList from "../components/Booklist";
+import { Book } from "./types"; // Import the Book type
 import { useRouter } from "next/navigation"; // Importing useRouter for navigation
 
 const BooksPage: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [search, setSearch] = useState<string>("");
+  const [Type, setType] = useState("");
   const router = useRouter(); // Initialize useRouter for navigation
+  let val: string = "global";
   useEffect(() => {
+    setType(val);
     loadBooks();
   }, [search]);
   3;
@@ -17,6 +20,7 @@ const BooksPage: React.FC = () => {
     try {
       const { data } = await fetchBooks(search);
       console.log("data: ", data);
+      setType(val);
       setBooks(data.books);
     } catch (error) {
       console.error("Error loading books:", error);
@@ -25,21 +29,34 @@ const BooksPage: React.FC = () => {
 
   const handleMyList = async () => {
     try {
-      const id: any = localStorage.getItem("user");
-      console.log("local data: ", id, id.id);
+      const userString = localStorage.getItem("user");
+      if (!userString) {
+        console.error("User data not found in localStorage");
+        return;
+      }
 
-      const { data } = await fetchMyList(id.id);
-      setBooks(data.books); // Assuming data.books is the response
+      const user = JSON.parse(userString);
+      if (!user.id) {
+        console.error("User ID is missing");
+        return;
+      }
+
+      console.log("Fetching books for user ID:", user.id);
+
+      const { data } = await fetchMyList({
+        id: user.id,
+        listId: "",
+      });
+      setType("");
+      setBooks(data); // Assuming data.books is the correct response
     } catch (error) {
       console.error("Error loading My List:", error);
     }
   };
-
-  const handleNewList = () => {
-    // Navigate to Add List page
-    router.push("/add-book");
+  const handleBookDelete = (bookId: string) => {
+    // Remove the deleted book from the state
+    setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
   };
-
   const handleLogout = () => {
     // Navigate to login page when logout button is clicked
     router.push("/login");
@@ -47,10 +64,8 @@ const BooksPage: React.FC = () => {
 
   return (
     <div className="container">
-      <nav className="navbar navbar-dark bg-dark">
-        <div className="navbar-brand ml-2" href="">
-          Home
-        </div>
+      <nav className="navbar navbar-dark p-3 bg-dark">
+        <div className="navbar-brand ml-2">Home</div>
         <button
           type="submit"
           onClick={handleLogout}
@@ -93,28 +108,19 @@ const BooksPage: React.FC = () => {
                 onClick={loadBooks}
                 className="btn btn-primary my-2 p-2 m-2"
               >
-                Total List
+                Total Books
               </button>
               <button
                 onClick={handleMyList}
                 className="btn btn-secondary my-2 p-2 m-2"
               >
-                My List
-              </button>
-              <button
-                onClick={handleNewList}
-                className="btn btn-success my-2 m-2"
-              >
-                <i className="bi bi-plus" style={{ fontSize: "20px" }}>
-                  +
-                </i>{" "}
-                New List
+                My Books
               </button>
             </div>
           </div>
         </div>
       </section>
-      <BookList books={books} />
+      <BookList books={books} type={Type} onDeleteBook={handleBookDelete} />
     </div>
   );
 };

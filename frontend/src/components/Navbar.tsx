@@ -26,10 +26,10 @@ const Navbar: React.FC = () => {
           <Link href="/books" style={styles.buttonLink}>
             Login
           </Link>
-          <Link href="/edit-book" style={styles.buttonLink}>
+          <Link href="/editbook" style={styles.buttonLink}>
             Register
           </Link>
-          <Link href="/add-book" style={styles.buttonLink}>
+          <Link href="/addbook" style={styles.buttonLink}>
             AddBook
           </Link>
         </div>

@@ -12,7 +12,7 @@ API.interceptors.request.use((req) => {
   return req;
 });
 interface fetchUserId {
-  id: string;
+  id: number;
   listId: string;
 }
 interface LoginData {
@@ -34,47 +34,36 @@ interface Book {
   title: string;
   author: string;
   genre: string;
-  condition: string;
+  status: string;
   availability: boolean;
 }
 
 export const registerUser = (data: AuthData): Promise<AxiosResponse> =>
   API.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, data);
-export const loginUser = (
-  data: LoginData
-): Promise<
-  AxiosResponse<{
-    user: string;
-    token: string;
-  }>
-> => API.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, data);
+export const loginUser = (data: LoginData): Promise<AxiosResponse> =>
+  API.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, data);
 export const forgotPassword = (data: resetData): Promise<AxiosResponse> =>
   API.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/forgot`, data);
 export const fetchBooks = (query: string): Promise<AxiosResponse<Book[]>> =>
-  API.get(`${process.env.NEXT_PUBLIC_API_URL}/books?search=${query}`);
+  API.get(`${process.env.NEXT_PUBLIC_API_URL}/books?search=${query}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json", // Optional
+    },
+  });
+
 export const fetchMyList = (data: fetchUserId): Promise<AxiosResponse> =>
-  API.get(`${process.env.NEXT_PUBLIC_API_URL}/books/${data.id}`);
+  API.get(`${process.env.NEXT_PUBLIC_API_URL}/books/${data.id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json", // Optional
+    },
+  });
+
 export const deleteList = (data: fetchUserId): Promise<AxiosResponse> =>
-  API.delete(`${process.env.NEXT_PUBLIC_API_URL}/books/${data.id}`);
-export const addBook = async (book: any) => {
-  const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_API_URL}/books`,
-    book
-  );
-  return response.data;
-};
-
-export const getBook = async (id: string) => {
-  const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/books/${id}`
-  );
-  return response.data;
-};
-
-export const updateBook = async (book: any) => {
-  const response = await axios.put(
-    `${process.env.NEXT_PUBLIC_API_URL}/books/${book.id}`,
-    book
-  );
-  return response.data;
-};
+  API.delete(`${process.env.NEXT_PUBLIC_API_URL}/books/${data.id}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json", // Optional
+    },
+  });

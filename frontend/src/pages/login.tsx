@@ -24,21 +24,27 @@ const LoginForm: React.FC = () => {
   };
   const router = useRouter();
   const handleLogin = async (e: FormEvent) => {
+    e.preventDefault(); // Prevent the default form submission
     try {
       const { data } = await loginUser({ email, password });
       console.log("data inside handle login: ", data);
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", data.user);
-      setSnackbar({
-        open: true,
-        message: "login successful!",
-        severity: "success",
-      });
-      clear();
-      console.log("Navigating to /books");
-      router.push("/books");
+      // Ensure data structure is correct
+      if (data?.token && data?.user) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        console.log("Navigating to /books");
+        router.push("./books"); // Navigate to the desired page
+        setSnackbar({
+          open: true,
+          message: "Login successful!",
+          severity: "success",
+        });
+      } else {
+        throw new Error("Invalid login response");
+      }
     } catch (err) {
+      console.error("Login error: ", err);
       setSnackbar({
         open: true,
         message: "Login failed. Please check your credentials.",

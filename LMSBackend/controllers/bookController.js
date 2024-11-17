@@ -3,8 +3,7 @@ const { Op, fn, col } = require("sequelize");
 
 exports.createBook = async (req, res) => {
   try {
-    const { title, author, genre, status, availability } = req.body;
-    const userId = req.user.id;
+    const { title, author, genre, status, availability, userId } = req.body;
     const book = await Book.create({
       title,
       author,
@@ -22,8 +21,8 @@ exports.createBook = async (req, res) => {
 exports.getBook = async (req, res) => {
   try {
     const bookId = req.params.id;
-
-    const book = await Book.findByPk(bookId);
+    const id = parseInt(bookId, 10);
+    const book = await Book.findByPk(id);
 
     res.status(200).json(book);
   } catch (error) {
@@ -53,9 +52,8 @@ exports.updateBook = async (req, res) => {
   try {
     const bookId = req.params.id;
     const { title, author, genre, status, availability, location } = req.body;
-    const userId = req.user.id;
 
-    const book = await Book.findOne({ where: { id: bookId, userId } });
+    const book = await Book.findOne({ where: { id: bookId } });
 
     if (!book) {
       return res
@@ -81,9 +79,8 @@ exports.updateBook = async (req, res) => {
 exports.deleteBook = async (req, res) => {
   try {
     const bookId = req.params.id;
-    const userId = req.user.id;
 
-    const book = await Book.findOne({ where: { id: bookId, userId } });
+    const book = await Book.findByPk(bookId);
 
     if (!book) {
       return res
