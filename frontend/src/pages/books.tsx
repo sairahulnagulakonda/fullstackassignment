@@ -1,33 +1,50 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchBooks, fetchMyList } from "../services/api";
 import BookList from "../components/Booklist";
-import { Book } from "./types"; // Import the Book type
-import { useRouter } from "next/navigation"; // Importing useRouter for navigation
+import { Book } from "./types";
+import { useRouter } from "next/navigation";
 
 const BooksPage: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
+  const [userEmail, setUserEmail] = useState<string>("");
   const [search, setSearch] = useState<string>("");
   const [Type, setType] = useState("");
-  const router = useRouter(); // Initialize useRouter for navigation
-  let val: string = "global";
+  const [page, setPage] = useState(1); // Track current page for pagination
+  const [loading, setLoading] = useState(false); // Loading state
+  const [isMyList, setIsMyList] = useState(false); // Track if user is viewing "My List"
+  const router = useRouter();
+
+  // Fetch user email from localStorage
   useEffect(() => {
-    setType(val);
-    loadBooks();
-  }, [search]);
-  3;
-  const loadBooks = async () => {
+    setType("global");
+    const val: any = localStorage.getItem("user");
+    const user = JSON.parse(val);
+    setUserEmail(user.email);
+    if (!isMyList) {
+      loadBooks(page); // Load books on search or page change
+    }
+  }, [search, page, isMyList]);
+
+  // Fetch books from API (for total books and pagination)
+  const loadBooks = async (page: number) => {
+    if (loading) return; // Prevent multiple API calls at once
+    setLoading(true);
+    setType("global");
     try {
-      const { data } = await fetchBooks(search);
-      console.log("data: ", data);
-      setType(val);
-      setBooks(data.books);
+      const { data } = await fetchBooks(search, page); // Pass the current page for pagination
+      setBooks((prevBooks) => [...prevBooks, ...data.books]); // Append new books
+      setLoading(false);
     } catch (error) {
       console.error("Error loading books:", error);
+      setLoading(false);
     }
   };
 
+  // Handle My List view
   const handleMyList = async () => {
+    setIsMyList(true);
+    setPage(1); // Reset pagination for My List
     try {
       const userString = localStorage.getItem("user");
       if (!userString) {
@@ -42,37 +59,59 @@ const BooksPage: React.FC = () => {
       }
 
       console.log("Fetching books for user ID:", user.id);
-
       const { data } = await fetchMyList({
         id: user.id,
         listId: "",
       });
       setType("");
-      setBooks(data); // Assuming data.books is the correct response
+      setBooks(data); // Set My List data
     } catch (error) {
       console.error("Error loading My List:", error);
     }
   };
+
+  // Handle book deletion
   const handleBookDelete = (bookId: string) => {
-    // Remove the deleted book from the state
     setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
   };
+
+  // Handle logout
   const handleLogout = () => {
-    // Navigate to login page when logout button is clicked
     router.push("/login");
   };
+
+  // Infinite scroll handler
+  const handleScroll = useCallback(() => {
+    if (loading || isMyList) return; // Don't trigger for "My List"
+    const bottom =
+      document.documentElement.scrollHeight ===
+      document.documentElement.scrollTop + window.innerHeight;
+    if (bottom) {
+      setPage((prevPage) => prevPage + 1); // Load next page if at the bottom
+    }
+  }, [loading, isMyList]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   return (
     <div className="container">
       <nav className="navbar navbar-dark p-3 bg-dark">
         <div className="navbar-brand ml-2">Home</div>
-        <button
-          type="submit"
-          onClick={handleLogout}
-          className="btn btn-outline-success my-2 mr-2 my-sm-0 text-white"
-        >
-          Logout
-        </button>
+        <div className="d-flex align-items-center">
+          <p className="text-white mb-0 p-2">{userEmail}</p>
+          <button
+            type="submit"
+            onClick={handleLogout}
+            className="btn btn-outline-success my-2 mr-2 my-sm-0 text-white"
+          >
+            Logout
+          </button>
+        </div>
       </nav>
       <section className="py-5 text-center container">
         <div className="row py-lg-5">
@@ -105,7 +144,11 @@ const BooksPage: React.FC = () => {
 
             <div className="mt-5">
               <button
-                onClick={loadBooks}
+                onClick={() => {
+                  setIsMyList(false); // Reset to load books when clicking 'Total Books'
+                  setPage(1); // Reset page number to 1
+                  setBooks([]); // Clear current books before loading new ones
+                }}
                 className="btn btn-primary my-2 p-2 m-2"
               >
                 Total Books

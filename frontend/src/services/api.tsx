@@ -44,14 +44,18 @@ export const loginUser = (data: LoginData): Promise<AxiosResponse> =>
   API.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, data);
 export const forgotPassword = (data: resetData): Promise<AxiosResponse> =>
   API.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/forgot`, data);
-export const fetchBooks = (query: string): Promise<AxiosResponse<Book[]>> =>
-  API.get(`${process.env.NEXT_PUBLIC_API_URL}/books?search=${query}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json", // Optional
-    },
-  });
-
+export const fetchBooks = async (query: string, page: number) => {
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/books?search=${query}&page=${page}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response;
+};
 export const fetchMyList = (data: fetchUserId): Promise<AxiosResponse> =>
   API.get(`${process.env.NEXT_PUBLIC_API_URL}/books/${data.id}`, {
     headers: {
