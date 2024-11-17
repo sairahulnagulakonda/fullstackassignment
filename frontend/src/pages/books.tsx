@@ -15,16 +15,40 @@ const BooksPage: React.FC = () => {
   const [isMyList, setIsMyList] = useState(false); // Track if user is viewing "My List"
   const router = useRouter();
 
-  // Fetch user email from localStorage
+  const [debouncedSearch, setDebouncedSearch] = useState<string>(""); // Debounced value
+
+  // Debounce effect for search input
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      setDebouncedSearch(search); // Update debounced search after delay
+    }, 500); // Adjust debounce delay as needed (500ms in this case)
+
+    return () => clearTimeout(delayDebounce); // Cleanup timeout
+  }, [search, page]);
+
+  // Fetch books whenever debouncedSearch changes
   useEffect(() => {
     setType("global");
     const val: any = localStorage.getItem("user");
     const user = JSON.parse(val);
     setUserEmail(user.email);
     if (!isMyList) {
-      loadBooks(page); // Load books on search or page change
+      setPage(1); // Reset page when search changes
+      setBooks([]); // Clear current books
+      loadBooks(1); // Load new books based on search query
     }
-  }, [search, page, isMyList]);
+  }, [debouncedSearch]);
+
+  // Fetch user email from localStorage
+  // useEffect(() => {
+  //   setType("global");
+  //   const val: any = localStorage.getItem("user");
+  //   const user = JSON.parse(val);
+  //   setUserEmail(user.email);
+  //   if (!isMyList) {
+  //     loadBooks(page); // Load books on search or page change
+  //   }
+  // }, [search, page, isMyList]);
 
   // Fetch books from API (for total books and pagination)
   const loadBooks = async (page: number) => {
